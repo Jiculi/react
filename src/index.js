@@ -37,11 +37,7 @@ function Lista(props){
     <div>
         <Titulo title = "Presuntos Responsables" sbtitle = "Acumulados" />
         
-        <ul>
-          {elements.map((value, index) => {
-              return <li key={index}>{value}</li>
-          })}
-        </ul>
+
                  
 
         <App/>
@@ -49,6 +45,15 @@ function Lista(props){
   ) 
 }
 
+/*
+
+        <ul>
+          {elements.map((value, index) => {
+              return <li key={index}>{value}</li>
+          })}
+        </ul>  
+
+*/
 
 
 class Details extends React.Component{
@@ -67,6 +72,7 @@ class Button extends React.Component{
   }
 }
 
+//     this.state = {activeArray:[0,0,0,0], details:""}
 class App extends React.Component{
   constructor(props){
     super(props)
@@ -80,19 +86,23 @@ class App extends React.Component{
     console.log(id,details)
   }
   render(){
+
+    const items = []
+
+    for (const [index, value] of elements.entries()) {
+      items.push(<Button key={index}  id = {index} active = {this.state.activeArray[index]} clickHandler = {this.clickHandler} name={value}/>)
+      console.log("active:"+this.state.activeArray[index])
+      console.log({index})
+    }
+
     return (
       <div>
-        <Button id = {0} active = {this.state.activeArray[0]} clickHandler = {this.clickHandler} name="bob"/>
-        <Button id = {1} active = {this.state.activeArray[1]} clickHandler = {this.clickHandler} name="joe"/>
-        <Button id = {2} active = {this.state.activeArray[2]} clickHandler = {this.clickHandler} name="tree"/>
-        <Button id = {3} active = {this.state.activeArray[3]} clickHandler = {this.clickHandler} name="paco"/>
+        {items}
         <Details details = {this.state.details}/>
       </div>
     )
   }
 }
-
-
 
 ReactDOM.render(
   <Lista/>,
