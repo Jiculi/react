@@ -1,96 +1,93 @@
-import React from "react";
-import ReactDOM from "react-dom";
+https://alligator.io/react/axios-react/
+import React from 'react';
+import ReactDOM from 'react-dom';
+import axios from 'axios';
 
-const estiloE = {
-  margin: '20px 0',
-  padding: '10px',
-  border: '1px solid #c8c8c8',
-  fontsize: '14px'
-}
+class FetchDemo extends React.Component {
+  constructor(props) {
+    super(props);
 
-const presuntos = [{"nombre":"Fuentes Burgos Pedro","cont":"5691"},
-                  {"nombre":"Gomez Campos Jorge","cont":"5692"},
-                  {"nombre":"Ahued Ortega Jose Armando","cont":"5693"},
-                  {"nombre":"Sanchez Salguero Ramon","cont":"5694"}];
-
-const nombres = presuntos.map(task => task.nombre);
-
-
-class Titulo extends React.Component{
-  render(){
-  return (              
-    <div>
-      <h1>{this.props.title}</h1>
-      <h2>{props.sbtitle}</h2>
-    </div>
-    )
+    this.state = {
+      posts: [],
+      loading: true,
+      error: null
+    };
   }
-}
-                  
 
+  componentDidMount() {
+    console.log("entramos DidMont")
+    // Remove the 'www.' to cause a CORS error (and see the error state)
+    axios.get('../api/gPresuntos.php?accion=13-A-09000-14-0741-06-004')
+      .then(res => {
 
+        console.dir("hay respuesta..." + JSON.stringify(res.data))
+        // Transform the raw data by extracting the nested posts
+        const posts = res.data
+        console.log("posts: "+posts)
 
-class Details extends React.Component{
-  render(){
-    return <h1>{this.props.details}</h1>
+        console.log(res.data);
+        console.log(res.status);
+        console.log(res.statusText);
+        console.log(res.headers);
+        console.log(res.config);
+        // Update state to trigger a re-render.
+        // Clear any errors, and turn off the loading indiciator.
+        this.setState({
+          posts,
+          loading: false,
+          error: null
+        });
+      })
+      .catch(err => {
+        // Something went wrong. Save the error in state and re-render.
+        console.log("hay error "+err)
+        this.setState({
+          loading: false,
+          error: err
+        });
+      });
   }
-}
 
-class Button extends React.Component{
-  render(){
-    return (
-      <button style = {{color: this.props.active? 'red': 'blue'}} onClick={() => {this.props.clickHandler(this.props.id,this.props.name)}}>
-        {this.props.name}
-      </button>
-    )
+  renderLoading() {
+    return <div>Loading...</div>;
   }
-}
 
-const ceros = [0,0,0,0]
-const manejo = [0,0,0,0]
-
-class App extends React.Component{
-    constructor(props){
-        super(props)
-        this.state = {activeArray:ceros, details:""}
-        this.clickHandler = this.clickHandler.bind(this)
-    }
-
-    clickHandler(id,details){
-        var arr = [0,0,0,0]
-        arr[id] = 1
-        this.setState({activeArray:arr, details:details})
-        console.log(id,details)
-    }
-
-    render(){
-        const items = []
-        for (const [index, value] of nombres.entries()) {
-            items.push(<Button key={index}  id = {index} active = {this.state.activeArray[index]} clickHandler = {this.clickHandler} name={value}/>)
-            console.log("active:"+this.state.activeArray[index]+ " - indice: " + index)
-        }
-        return (
-          <div>
-              {items}
-              <Details details = {this.state.details}/>
-          </div>
-        )
-    }
-}
-
-class Lista extends React.Component{
-  render(){
+  renderError() {
     return (
       <div>
-          <Titulo title = "Presuntos Responsables" sbtitle = "Acumulados" />
-          <App/>
+        Uh oh: {this.state.error.message}
       </div>
-    )
-  } 
+    );
+  }
+
+  renderPosts() {
+    if(this.state.error) {
+      return this.renderError();
+    }
+
+    return (
+      <ul>
+        {this.state.posts.map(post =>
+          <li key={post.cont}>{post.nombre}</li>
+        )}
+      </ul>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>{`/r/${this.props.subreddit}`}</h1>
+        {this.state.loading ?
+          this.renderLoading()
+          : this.renderPosts()}
+      </div>
+    );
+  }
 }
 
-
+// Change the subreddit to anything you like
 ReactDOM.render(
-  <Lista/>,
-  document.getElementById("root")
-)
+  <FetchDemo subreddit="Hola papa"/>,
+  document.getElementById('root')
+);
