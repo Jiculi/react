@@ -13,47 +13,21 @@ const presuntos = [{"nombre":"Fuentes Burgos Pedro","cont":"5691"},
                   {"nombre":"Ahued Ortega Jose Armando","cont":"5693"},
                   {"nombre":"Sanchez Salguero Ramon","cont":"5694"}];
 
-const elements = presuntos.map(task => task.nombre);
+const nombres = presuntos.map(task => task.nombre);
 
-function Titulo(props){
+
+class Titulo extends React.Component{
+  render(){
   return (              
     <div>
-      <h1>{props.title}</h1>
+      <h1>{this.props.title}</h1>
       <h2>{props.sbtitle}</h2>
     </div>
     )
+  }
 }
                   
-function Item(props){
-  return (
-    <div>
-      <td style = {estiloE}> {presuntos[props.indice].nombre}</td>
-    </div>
-  )
-}
 
-function Lista(props){
-  return (
-    <div>
-        <Titulo title = "Presuntos Responsables" sbtitle = "Acumulados" />
-        
-
-                 
-
-        <App/>
-    </div>
-  ) 
-}
-
-/*
-
-        <ul>
-          {elements.map((value, index) => {
-              return <li key={index}>{value}</li>
-          })}
-        </ul>  
-
-*/
 
 
 class Details extends React.Component{
@@ -72,37 +46,49 @@ class Button extends React.Component{
   }
 }
 
-//     this.state = {activeArray:[0,0,0,0], details:""}
+const ceros = [0,0,0,0]
+const manejo = [0,0,0,0]
+
 class App extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {activeArray:[0,0,0,0], details:""}
-    this.clickHandler = this.clickHandler.bind(this)
-  }
-  clickHandler(id,details){
-    var arr = [0,0,0,0]
-    arr[id] = 1
-    this.setState({activeArray:arr,details:details})
-    console.log(id,details)
-  }
-  render(){
-
-    const items = []
-
-    for (const [index, value] of elements.entries()) {
-      items.push(<Button key={index}  id = {index} active = {this.state.activeArray[index]} clickHandler = {this.clickHandler} name={value}/>)
-      console.log("active:"+this.state.activeArray[index])
-      console.log({index})
+    constructor(props){
+        super(props)
+        this.state = {activeArray:ceros, details:""}
+        this.clickHandler = this.clickHandler.bind(this)
     }
 
+    clickHandler(id,details){
+        var arr = [0,0,0,0]
+        arr[id] = 1
+        this.setState({activeArray:arr, details:details})
+        console.log(id,details)
+    }
+
+    render(){
+        const items = []
+        for (const [index, value] of nombres.entries()) {
+            items.push(<Button key={index}  id = {index} active = {this.state.activeArray[index]} clickHandler = {this.clickHandler} name={value}/>)
+            console.log("active:"+this.state.activeArray[index]+ " - indice: " + index)
+        }
+        return (
+          <div>
+              {items}
+              <Details details = {this.state.details}/>
+          </div>
+        )
+    }
+}
+
+class Lista extends React.Component{
+  render(){
     return (
       <div>
-        {items}
-        <Details details = {this.state.details}/>
+          <Titulo title = "Presuntos Responsables" sbtitle = "Acumulados" />
+          <App/>
       </div>
     )
-  }
+  } 
 }
+
 
 ReactDOM.render(
   <Lista/>,
