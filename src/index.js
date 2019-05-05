@@ -15,7 +15,8 @@ class FetchDatos extends React.Component {
   componentDidMount() {
     axios.get('../api/gPresuntos.php?accion=13-A-09000-14-0741-06-004')
       .then(res => {
-
+        console.log(res);
+        const posts = res.data;
         this.setState({
           posts,
           loading: false,
@@ -37,7 +38,7 @@ class FetchDatos extends React.Component {
   renderError() {
     return (
       <div>
-        Uh oh: {this.state.error.message}
+        Error: {this.state.error.message}
       </div>
     );
   }
